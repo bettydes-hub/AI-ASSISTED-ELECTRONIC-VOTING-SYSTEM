@@ -32,6 +32,7 @@ class User(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     full_name: Mapped[str] = mapped_column(String(120), nullable=False)
     national_id: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
+    contact_info: Mapped[str | None] = mapped_column(String(120), nullable=True)
     username: Mapped[str] = mapped_column(String(60), nullable=False, unique=True)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     role: Mapped[UserRole] = mapped_column(Enum(UserRole), nullable=False)
@@ -49,4 +50,4 @@ class User(Base):
         "AuditAuthorityProfile", back_populates="user", uselist=False
     )
     audit_logs = relationship("AuditLog", back_populates="user")
-    votes_cast = relationship("Vote")
+    votes_cast = relationship("Vote", back_populates="voter_user")

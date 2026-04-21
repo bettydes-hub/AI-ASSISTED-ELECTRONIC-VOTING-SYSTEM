@@ -25,4 +25,4 @@ class Vote(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     candidate = relationship("Candidate", back_populates="votes")
-    voter_user = relationship("User")
+    voter_user = relationship("User", back_populates="votes_cast")
