@@ -1,49 +1,78 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 
 export default function HomePage() {
+  const [isRoleMenuOpen, setIsRoleMenuOpen] = useState(false);
+
   return (
     <>
-      <section className="hero">
+      <section className="home-hero">
+        <p className="home-kicker">National Election Board of Ethiopia</p>
         <h1>Secure Election Management Portal</h1>
-        <p>
-          Browse election modules, manage operational roles, and move directly to the full workflow
-          for setup, registration, voting, and auditing.
+        <p className="home-subtitle">
+          Manage election setup, voter registration, voting, and auditing through a secure,
+          role-based, and nationally aligned workflow.
         </p>
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <Link href="/login">Start Login</Link>
-          <Link href="/election-board/dashboard">Open Election Board</Link>
+        <div className="home-actions">
+          <Link href="/login" className="home-primary-link">
+            Start Login
+          </Link>
+          <button
+            type="button"
+            className="home-secondary-link home-role-trigger"
+            onClick={() => setIsRoleMenuOpen((prev) => !prev)}
+            aria-expanded={isRoleMenuOpen}
+            aria-controls="role-portals-menu"
+          >
+            Role Portals
+          </button>
         </div>
+        {isRoleMenuOpen ? (
+          <div id="role-portals-menu" className="home-role-dropdown">
+            <Link href="/election-board/dashboard">
+              <strong>Election Board</strong>
+              <span>Setup election, candidates, parties, and schedules.</span>
+            </Link>
+            <Link href="/election-officer/dashboard">
+              <strong>Election Officer</strong>
+              <span>Register voters, issue OTP, and verify identity records.</span>
+            </Link>
+            <Link href="/voter/dashboard">
+              <strong>Voter</strong>
+              <span>View ballot, vote securely, and check voting status.</span>
+            </Link>
+            <Link href="/system-admin/dashboard">
+              <strong>System Admin</strong>
+              <span>Manage users, logs, and core system configuration.</span>
+            </Link>
+            <Link href="/audit/dashboard">
+              <strong>Audit Authority</strong>
+              <span>Review logs and verify election transparency.</span>
+            </Link>
+          </div>
+        ) : null}
       </section>
 
       <section>
-        <h2>Role Portals</h2>
+        <h2>Election Workflow Overview</h2>
         <div className="quick-grid">
           <div className="quick-card">
-            <h3>Election Board</h3>
-            <p>Election setup, activation, closure, and result approval.</p>
-            <Link href="/election-board/dashboard">Go to module</Link>
+            <h3>1. Setup</h3>
+            <p>Election Board prepares election details, schedule, candidates, and parties.</p>
           </div>
           <div className="quick-card">
-            <h3>Election Officer</h3>
-            <p>Voter registration with OTP and operational station support.</p>
-            <Link href="/election-officer/dashboard">Go to module</Link>
+            <h3>2. Register & Verify</h3>
+            <p>Election Officers register voters, issue OTP, and verify voter identity records.</p>
           </div>
           <div className="quick-card">
-            <h3>Voter</h3>
-            <p>Status check, ballot access, and vote submission flow.</p>
-            <Link href="/voter/dashboard">Go to module</Link>
+            <h3>3. Vote & Result</h3>
+            <p>Voters cast ballots securely, and authorized roles verify and publish outcomes.</p>
           </div>
           <div className="quick-card">
-            <h3>System Admin</h3>
-            <p>User roles, security logs, and system maintenance controls.</p>
-            <Link href="/system-admin/dashboard">Go to module</Link>
-          </div>
-          <div className="quick-card">
-            <h3>Audit Authority</h3>
-            <p>Read-only log review and election audit report generation.</p>
-            <Link href="/audit/dashboard">Go to module</Link>
+            <h3>4. Audit & Trust</h3>
+            <p>Audit Authority reviews logs and reports to support transparency and fairness.</p>
           </div>
         </div>
       </section>
