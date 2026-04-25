@@ -6,7 +6,7 @@ dist/
 
 # env / secrets
 .env
-.env.* 
+.env.*
 
 # python
 __pycache__/
@@ -18,14 +18,3 @@ venv/
 
 # logs
 *.log
-
-.env
-.venv/
-venv/
-__pycache__/
-*.pyc
-frontend/node_modules/
-frontend/.next/
-frontend/out/
-*.log
-.DS_Store
