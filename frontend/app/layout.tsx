@@ -49,7 +49,7 @@ export default function RootLayout(props: { children: ReactNode }) {
           </div>
         </header>
         <main>{props.children}</main>
-        <footer className="site-footer">University Final Year Project</footer>
+        <footer className="site-footer">All rights Reserved</footer>
       </body>
     </html>
   );
