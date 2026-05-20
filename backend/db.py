@@ -34,7 +34,8 @@ def init_db() -> None:
     from models.user import User  # noqa: F401
     from models.vote import Vote  # noqa: F401
     from models.voter_profile import VoterProfile  # noqa: F401
-
+    from models.vote_receipt import VoteReceipt  # noqa: F401
+    
     Base.metadata.create_all(bind=engine)
     _ensure_users_contact_info_column()
     _ensure_election_schedule_columns()
