@@ -19,7 +19,8 @@ from routes.voter_routes import voter_bp
 from routes.voting_routes import voting_bp
 from services.candidate_file_service import candidate_upload_dir
 from services.party_file_service import allowed_file_basename
-
+from routes.voter_routes import voter_bp
+from routes.biometric_routes import biometric_bp
 PROJECT_ROOT_ENV = Path(__file__).resolve().parent.parent / ".env"
 BACKEND_DIR = Path(__file__).resolve().parent
 PARTY_UPLOAD_ROOT = BACKEND_DIR / "uploads"
@@ -54,6 +55,7 @@ app.register_blueprint(voting_bp, url_prefix="/api")
 app.register_blueprint(admin_bp, url_prefix="/api")
 app.register_blueprint(audit_bp, url_prefix="/api")
 app.register_blueprint(system_bp, url_prefix="/api")
+app.register_blueprint( biometric_bp,url_prefix="/api")
 init_db()
 
 
@@ -89,6 +91,11 @@ def serve_candidate_file(candidate_id: int, fname: str):
 def health():
     return {"status": "ok", "message": "E-Voting API ready"}
 
+@app.get("/")
+def home():
+    return {
+        "message": "AI E-Voting Backend Running"
+    }
 
 if __name__ == "__main__":
     debug_mode = os.getenv("FLASK_DEBUG", "true").lower() == "true"
