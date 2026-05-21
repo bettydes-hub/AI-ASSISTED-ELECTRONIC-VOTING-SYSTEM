@@ -18,6 +18,8 @@ class AuditLog(Base):
     action: Mapped[str] = mapped_column(Text, nullable=False)
     ip_address: Mapped[str | None] = mapped_column(String(64), nullable=True)
     event_type: Mapped[str] = mapped_column(String(50), default="system")
+    previous_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    record_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="audit_logs")

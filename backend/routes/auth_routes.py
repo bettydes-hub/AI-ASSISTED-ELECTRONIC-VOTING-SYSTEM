@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Blueprint, jsonify, request
 
 from db import SessionLocal
@@ -38,6 +40,7 @@ def login():
                     "username": user.username,
                     "role": user.role.value,
                     "account_status": user.account_status.value,
+                    "must_change_password": user.must_change_password,
                 },
             }
         )
@@ -126,8 +129,40 @@ def me():
                 "username": user.username,
                 "role": user.role.value,
                 "account_status": user.account_status.value,
+                "must_change_password": user.must_change_password,
             }
         )
+
+
+@auth_bp.post("/auth/change-password")
+@require_any_role("Voter", "ElectionOfficer", "ElectionBoard", "SystemAdmin", "AuditAuthority")
+def change_password():
+    payload = request.get_json(silent=True) or {}
+    current_password = payload.get("current_password") or ""
+    new_password = payload.get("new_password") or ""
+    if not current_password or not new_password:
+        return jsonify({"error": "current_and_new_password_required"}), 400
+    if len(str(new_password)) < 8:
+        return jsonify({"error": "weak_password"}), 400
+
+    user_id_raw = request.headers.get("X-User-Id", "").strip()
+    if not user_id_raw.isdigit():
+        return jsonify({"error": "x_user_id_required"}), 400
+
+    with SessionLocal() as db:
+        user = db.get(User, int(user_id_raw))
+        if not user:
+            return jsonify({"error": "user_not_found"}), 404
+        if not verify_password(current_password, user.password_hash):
+            return jsonify({"error": "invalid_current_password"}), 401
+        if verify_password(new_password, user.password_hash):
+            return jsonify({"error": "password_reuse_not_allowed"}), 400
+
+        user.password_hash = hash_password(new_password)
+        user.must_change_password = False
+        user.password_changed_at = datetime.utcnow()
+        db.commit()
+        return jsonify({"message": "password_changed"})
 
 
 def _is_valid_national_id(value: str) -> bool:

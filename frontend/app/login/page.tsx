@@ -79,10 +79,14 @@ export default function LoginPage() {
       localStorage.setItem('evoting.user', JSON.stringify(data.user));
       localStorage.setItem('evoting.role', data.user.role);
       setMessage(`Login success as ${data.user.role}.`);
+      if (data.user.must_change_password) {
+        router.push('/change-password');
+        return;
+      }
       if (data.user.role === 'ElectionBoard') {
         router.push('/election-board/dashboard');
       } else if (data.user.role === 'SystemAdmin') {
-        router.push('/system-admin/user-management');
+        router.push('/system-admin/dashboard');
       } else if (data.user.role === 'ElectionOfficer') {
         router.push('/election-officer/dashboard');
       } else if (data.user.role === 'AuditAuthority') {

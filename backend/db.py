@@ -44,6 +44,8 @@ def init_db() -> None:
     _ensure_candidate_extended_columns()
     _ensure_region_seed_rows()
     _ensure_election_extended_columns()
+    _ensure_users_password_policy_columns()
+    _ensure_audit_hash_columns()
 
 
 def _ensure_users_contact_info_column() -> None:
@@ -245,4 +247,38 @@ def _ensure_region_seed_rows() -> None:
             if name.lower() in existing:
                 continue
             conn.execute(text("INSERT INTO regions (name) VALUES (:name)"), {"name": name})
+
+
+def _ensure_users_password_policy_columns() -> None:
+    inspector = inspect(engine)
+    if "users" not in inspector.get_table_names():
+        return
+    columns = {column["name"] for column in inspector.get_columns("users")}
+    alters: list[str] = []
+    if "must_change_password" not in columns:
+        alters.append("ALTER TABLE users ADD COLUMN must_change_password BOOLEAN DEFAULT 0")
+    if "password_changed_at" not in columns:
+        alters.append("ALTER TABLE users ADD COLUMN password_changed_at TIMESTAMP")
+    if not alters:
+        return
+    with engine.begin() as conn:
+        for statement in alters:
+            conn.execute(text(statement))
+
+
+def _ensure_audit_hash_columns() -> None:
+    inspector = inspect(engine)
+    if "audit_logs" not in inspector.get_table_names():
+        return
+    columns = {column["name"] for column in inspector.get_columns("audit_logs")}
+    alters: list[str] = []
+    if "previous_hash" not in columns:
+        alters.append("ALTER TABLE audit_logs ADD COLUMN previous_hash VARCHAR(128)")
+    if "record_hash" not in columns:
+        alters.append("ALTER TABLE audit_logs ADD COLUMN record_hash VARCHAR(128)")
+    if not alters:
+        return
+    with engine.begin() as conn:
+        for statement in alters:
+            conn.execute(text(statement))
 

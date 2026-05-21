@@ -35,10 +35,14 @@ export async function apiPatch(path: string, role: Role, body?: unknown) {
   return parseResponse(res);
 }
 
-export async function apiDelete(path: string, role: Role) {
+export async function apiDelete(path: string, role: Role, body?: unknown) {
   const res = await safeFetch(`${getApiBase()}${path}`, {
     method: 'DELETE',
-    headers: withAuthHeaders({ 'X-Role': role }),
+    headers: withAuthHeaders({
+      'X-Role': role,
+      ...(body ? { 'Content-Type': 'application/json' } : {}),
+    }),
+    body: body ? JSON.stringify(body) : undefined,
   });
   return parseResponse(res);
 }

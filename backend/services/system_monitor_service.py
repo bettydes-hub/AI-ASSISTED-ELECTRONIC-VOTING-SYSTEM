@@ -5,7 +5,9 @@ from __future__ import annotations
 from datetime import datetime
 
 SYSTEM_STATE = {
+    "started_at": datetime.utcnow().isoformat(),
     "suspended": False,
+    "operational_mode": "normal",
     "additional_monitoring": False,
     "last_backup_restore": None,
     "last_integrity_check": None,
@@ -13,6 +15,17 @@ SYSTEM_STATE = {
     "last_patch_update": None,
     "patch_failure_count": 0,
     "alerts": [],
+    "update_state": {
+        "last_update_label": None,
+        "last_update_status": None,
+        "last_update_error": None,
+        "last_update_started_at": None,
+        "last_update_finished_at": None,
+        "rollback_available": False,
+        "last_rollback_at": None,
+        "last_rollback_reason": None,
+        "snapshot": None,
+    },
     "failure_state": {
         "active": False,
         "category": None,

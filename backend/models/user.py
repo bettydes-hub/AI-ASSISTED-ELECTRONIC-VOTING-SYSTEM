@@ -5,7 +5,7 @@ from __future__ import annotations
 import enum
 from datetime import datetime
 
-from sqlalchemy import DateTime, Enum, Integer, String
+from sqlalchemy import Boolean, DateTime, Enum, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db import Base
@@ -39,6 +39,8 @@ class User(Base):
     account_status: Mapped[AccountStatus] = mapped_column(
         Enum(AccountStatus), nullable=False, default=AccountStatus.PENDING
     )
+    must_change_password: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    password_changed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     voter_profile = relationship("VoterProfile", back_populates="user", uselist=False)
